@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from data import dataset, sequence, frame_number
+
+from replay_dataset import ReplayDataset
 
 def visualize_dataset_item(dataset, sequence_name, frame_idx):
     """
@@ -122,6 +123,29 @@ def visualize_dataset_item(dataset, sequence_name, frame_idx):
             elif hasattr(attr, '__len__') and not isinstance(attr, str) and attr is not None:
                 print(f"  {attr_name}: {len(attr)} ({type(attr)})")
 
-if __name__ == "__main__":
-    # Use the sequence and frame_number from data.py
-    visualize_dataset_item(dataset, sequence, frame_number) 
+SQL_ROOT = r"C:\Users\dylan\replay_dataset\tests\data\replay_dataset_100.sqlite"
+SET_LIST_FILE = r"C:\Users\dylan\replay_dataset\tests\data\set_lists_100.json"
+NO_BLOBS_KWARGS = {
+    "dataset_root": r"C:\Users\dylan",
+    "load_images": False,
+    "load_depths": False,
+    "load_masks": False,
+    "load_depth_masks": False,
+    "box_crop": False,
+}
+dataset = ReplayDataset(
+            sqlite_metadata_file=SQL_ROOT,
+            remove_empty_masks=False,
+            subset_lists_file=SET_LIST_FILE,
+            limit_to=100,  # force sorting
+            subsets=["train", "test"],
+            frame_data_builder_ReplayFrameDataBuilder_args=NO_BLOBS_KWARGS,
+        )
+dataset = ReplayDataset(
+            sqlite_metadata_file=SQL_ROOT,
+            remove_empty_masks=False,
+            frame_data_builder_ReplayFrameDataBuilder_args=NO_BLOBS_KWARGS,
+)
+sequence = 'cat1_seq2'
+frame_number = 0
+visualize_dataset_item(dataset, sequence, frame_number) 
